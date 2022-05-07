@@ -1,0 +1,3 @@
+#!/Users/prabhavkhera/Documents/emotion-recognizer/env/bin/python3
+from numba.pycc import main
+main()
