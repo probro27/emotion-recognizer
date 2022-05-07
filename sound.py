@@ -50,7 +50,6 @@ def loading_audio_data(test_size=0.2):
     return train_test_split(np.array(x), y, test_size=test_size, random_state=101)
 
 X_train, X_test, y_train, y_test = loading_audio_data(test_size=0.25)
-# print((X_train.shape[0], X_test.shape[0]))
 print(f'Features extracted: {X_train.shape[1]}')
 model = MLPClassifier(alpha=0.01, batch_size=256, epsilon=1e-08, 
                       hidden_layer_sizes=(300,), learning_rate='adaptive', max_iter=500)
@@ -58,6 +57,5 @@ model.fit(X_train,y_train)
 
 y_pred = model.predict(X_test)
 accuracy_score = accuracy_score(y_true=y_test, y_pred=y_pred)
-# print(f"accuracy of the recognizer is {accuracy_score * 100}")
 
 print(classification_report(y_true=y_test, y_pred=y_pred))
