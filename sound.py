@@ -6,7 +6,7 @@ import os, glob, pickle
 
 from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPClassifier
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
 emotional_labels = {
     '01': 'neutral',
@@ -19,22 +19,45 @@ emotional_labels = {
     '08': 'surprised'
 }
 
-focused_emotional_labels = ['happy', 'sad', 'angry']
-
-def audio_features(file_path, mfcc, chroma, mel):
-    with sf.SoundFile(file_path) as sound_file:
-        audio = sound_file.read(dtype='float32')
+focussed_emotional_labels = ['calm', 'happy', 'fearful', 'disgust']
+def audio_features(file_name, mfcc, chroma, mel):
+    with sf.SoundFile(file_name) as sound_file:
+        X = sound_file.read(dtype = "float32")
         sample_rate = sound_file.samplerate
-        if chroma:
-            stft = np.abs(lb.stft(audio))
-            result = np.array([])
+        result = np.array([])
         if mfcc:
-            mfcc = np.mean(lb.feature.mfcc(y = audio,sr = sample_rate, n_mfcc=40).T, axis=0)
-            result = np.hstack((result, mfcc))
+            mfccs = np.mean(lb.feature.mfcc(y=X, sr=sample_rate, n_mfcc=40).T, axis=0)
+            result = np.hstack((result, mfccs))
         if chroma:
-            chroma = np.mean(lb.feature.chroma_stft(S=stft, sr=sample_rate).T, axis=0)
+            stft = np.abs(lb.stft(X))
+            chroma = np.mean(lb.feature.chroma_stft(S=stft, sr=sample_rate).T,axis=0)
             result = np.hstack((result, chroma))
         if mel:
-            mel = np.mean(lb.feature.melspectrogram(audio, sr=sample_rate).T, axis=0)
+            mel = np.mean(lb.feature.melspectrogram(X, sr=sample_rate).T,axis=0)
             result = np.hstack((result, mel))
-        return result
+    return result
+        
+def loading_audio_data(test_size=0.2):
+    x,y = [],[]
+    for file in glob.glob("./data/Actor_*/*.wav"):
+        file_name = os.path.basename(file)
+        emotion = emotional_labels[file_name.split("-")[2]]
+        if emotion not in focussed_emotional_labels:
+            continue
+        feature = audio_features(file, mfcc=True, chroma=True, mel=True)
+        x.append(feature)
+        y.append(emotion)
+    return train_test_split(np.array(x), y, test_size=test_size, random_state=101)
+
+X_train, X_test, y_train, y_test = loading_audio_data(test_size=0.25)
+# print((X_train.shape[0], X_test.shape[0]))
+print(f'Features extracted: {X_train.shape[1]}')
+model = MLPClassifier(alpha=0.01, batch_size=256, epsilon=1e-08, 
+                      hidden_layer_sizes=(300,), learning_rate='adaptive', max_iter=500)
+model.fit(X_train,y_train)
+
+y_pred = model.predict(X_test)
+accuracy_score = accuracy_score(y_true=y_test, y_pred=y_pred)
+# print(f"accuracy of the recognizer is {accuracy_score * 100}")
+
+print(classification_report(y_true=y_test, y_pred=y_pred))
