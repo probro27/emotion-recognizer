@@ -21,6 +21,7 @@ emotional_labels = {
 
 focussed_emotional_labels = ['calm', 'happy', 'fearful', 'disgust']
 def audio_features(file_name, mfcc, chroma, mel):
+    print(file_name)
     with sf.SoundFile(file_name) as sound_file:
         X = sound_file.read(dtype = "float32")
         sample_rate = sound_file.samplerate
@@ -40,6 +41,7 @@ def audio_features(file_name, mfcc, chroma, mel):
 def loading_audio_data(test_size=0.2):
     x,y = [],[]
     for file in glob.glob("./data/Actor_*/*.wav"):
+        # print(file)
         file_name = os.path.basename(file)
         emotion = emotional_labels[file_name.split("-")[2]]
         if emotion not in focussed_emotional_labels:
@@ -49,13 +51,17 @@ def loading_audio_data(test_size=0.2):
         y.append(emotion)
     return train_test_split(np.array(x), y, test_size=test_size, random_state=101)
 
-X_train, X_test, y_train, y_test = loading_audio_data(test_size=0.25)
-print(f'Features extracted: {X_train.shape[1]}')
-model = MLPClassifier(alpha=0.01, batch_size=256, epsilon=1e-08, 
-                      hidden_layer_sizes=(300,), learning_rate='adaptive', max_iter=500)
-model.fit(X_train,y_train)
+def main():
+    X_train, X_test, y_train, y_test = loading_audio_data(test_size=0.25)
+    # print(f'Features extracted: {X_train.shape[1]}')
+    model = MLPClassifier(alpha=0.01, batch_size=256, epsilon=1e-08, 
+                        hidden_layer_sizes=(300,), learning_rate='adaptive', max_iter=500)
+    model.fit(X_train,y_train)
 
-y_pred = model.predict(X_test)
-accuracy_score = accuracy_score(y_true=y_test, y_pred=y_pred)
+    return model
+    # y_pred = model.predict(X_test)
+    # accuracy_score = accuracy_score(y_true=y_test, y_pred=y_pred)
+    # print(classification_report(y_true=y_test, y_pred=y_pred))
 
-print(classification_report(y_true=y_test, y_pred=y_pred))
+
+audio_features('./data/Actor_16/03-02-03-02-02-02-16.wav', mfcc=True, chroma=True, mel=True)
