@@ -62,9 +62,9 @@ def main():
     filename = 'finalized_model.sav'
     pickle.dump(model, open(filename, 'wb'))
 
-    # y_pred = model.predict(X_test)
-    # accuracy_score = accuracy_score(y_true=y_test, y_pred=y_pred)
-    # print(classification_report(y_true=y_test, y_pred=y_pred))
+    y_pred = model.predict(X_test)
+    print(f'Accuracy: {accuracy_score(y_test, y_pred) * 100}%')
+    print(classification_report(y_true=y_test, y_pred=y_pred))
 
 if __name__ == '__main__':
     main()
