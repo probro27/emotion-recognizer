@@ -5,6 +5,7 @@ import requests
 import os
 import sound
 import speech_recognition as sr
+import pickle
 
 app = Flask(__name__)
 CORS(app)
@@ -38,7 +39,7 @@ def audio():
                 f.write(data.get_wav_data())
             
             data_features = sound.audio_features("audio.wav", mfcc=True, chroma=True, mel=True)
-            model = sound.main()
+            model = pickle.load(open("finalized_model.sav", "rb"))
             prediction = model.predict([data_features])
             print(prediction)
         return jsonify({"result": prediction[0]}), 200

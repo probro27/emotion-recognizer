@@ -3,6 +3,7 @@ import librosa as lb
 import numpy as np
 import soundfile as sf
 import os, glob, pickle
+import pickle
 
 from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPClassifier
@@ -58,10 +59,12 @@ def main():
                         hidden_layer_sizes=(300,), learning_rate='adaptive', max_iter=500)
     model.fit(X_train,y_train)
 
-    return model
+    filename = 'finalized_model.sav'
+    pickle.dump(model, open(filename, 'wb'))
+
     # y_pred = model.predict(X_test)
     # accuracy_score = accuracy_score(y_true=y_test, y_pred=y_pred)
     # print(classification_report(y_true=y_test, y_pred=y_pred))
 
-
-audio_features('./data/Actor_16/03-02-03-02-02-02-16.wav', mfcc=True, chroma=True, mel=True)
+if __name__ == '__main__':
+    main()
