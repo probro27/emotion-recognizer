@@ -8,7 +8,7 @@ import speech_recognition as sr
 import pickle
 import soundfile as sf
 from werkzeug.utils import secure_filename
-import io
+import connectSpotify
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -48,10 +48,14 @@ def audio():
             data_features = sound.audio_features("audio.wav", mfcc=True, chroma=True, mel=True)
             model = pickle.load(open("finalized_model.sav", "rb"))
             prediction = model.predict([data_features])
+            username = request.form['username']
+            token = connectSpotify.connect(username)
+            sp = connectSpotify.authenticate()
+            print(sp)
             print(prediction)
         return jsonify({"result": prediction[0]}), 200
     elif request.method == 'GET':
         return "Hello World!"   
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
