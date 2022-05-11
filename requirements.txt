@@ -22,6 +22,7 @@ packaging==21.3
 pooch==1.6.0
 pycparser==2.21
 pyparsing==3.0.8
+python-dotenv==0.20.0
 requests==2.27.1
 resampy==0.2.2
 scikit-learn==1.0.2
@@ -30,6 +31,7 @@ six==1.16.0
 sklearn==0.0
 SoundFile==0.10.3.post1
 SpeechRecognition==3.8.1
+spotipy==2.19.0
 threadpoolctl==3.1.0
 urllib3==1.26.9
 wavio==0.0.4
