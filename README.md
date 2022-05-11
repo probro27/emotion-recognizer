@@ -17,3 +17,9 @@ We have used a Flask backend that takes in a simple GET and POST request.
 For the POST request, our API essentially receives an audio file. We have used SpeechRecognition module to convert this into a .wav file and save it locally. Then we extract the audio features and use the model to give it's prediction. 
 
 It is able to return the result to the caller within 1 sec and is extremely efficient. 
+
+## SpotifyAPI Connection
+
+We have connected the flask API to Spotify, so using user authentication, we can login into Spotify and access the uer's favourite artists. Then we take the top tracks of these artists and select songs according to a custom algorithm. From that list, we return the top 30 tracks for the particular mood. This playlist is randomized every time we search so the song recommendations are always different. 
+
+Backend deployed on Heroku, pass the audio file (.wav) as formData with "file" key and your Spotify username with "username" key to check the Spotify.
