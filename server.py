@@ -52,3 +52,6 @@ def audio():
         return jsonify({"result": prediction[0]}), 200
     elif request.method == 'GET':
         return "Hello World!"   
+
+if __name__ == '__main__':
+    app.run()
