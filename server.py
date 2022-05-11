@@ -43,17 +43,19 @@ def audio():
                 data = recognizer.record(source)
             with open("audio.wav", "wb") as f:
                 f.write(data.get_wav_data())
-           
-            
             data_features = sound.audio_features("audio.wav", mfcc=True, chroma=True, mel=True)
             model = pickle.load(open("finalized_model.sav", "rb"))
             prediction = model.predict([data_features])
+            os.environ["MOOD"] = str(prediction[0])
             username = request.form['username']
             token = connectSpotify.connect(username)
             sp = connectSpotify.authenticate()
+            top_tracks_uri = connectSpotify.aggregate_top_tracks(sp, connectSpotify.aggregate_top_artists(sp))
+            selected_tracks = connectSpotify.select_tracks(sp, top_tracks_uri)
+            playlist_uri = connectSpotify.create_playlist(sp, selected_tracks)
             print(sp)
             print(prediction)
-        return jsonify({"result": prediction[0]}), 200
+        return jsonify({"result": prediction[0], "uri": playlist_uri}), 200
     elif request.method == 'GET':
         return "Hello World!"   
 
