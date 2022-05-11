@@ -6,6 +6,9 @@ import os
 import sound
 import speech_recognition as sr
 import pickle
+import soundfile as sf
+from werkzeug.utils import secure_filename
+import io
 
 app = Flask(__name__)
 CORS(app)
@@ -23,10 +26,12 @@ def audio():
         length = request.content_length
         content_type = request.content_type
         
+        print(request.files)
         if "file" not in request.files:
             return jsonify({"error": "No file in request"}), 400
         
         file = request.files['file']
+        print(type(file))
         if file.filename == '':
             return jsonify({"error": "No file selected"}), 400
         
