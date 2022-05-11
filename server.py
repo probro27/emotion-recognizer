@@ -9,7 +9,6 @@ import pickle
 import soundfile as sf
 from werkzeug.utils import secure_filename
 import io
-import wavio
 
 app = Flask(__name__)
 CORS(app)
