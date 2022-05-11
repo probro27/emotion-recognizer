@@ -9,6 +9,7 @@ import pickle
 import soundfile as sf
 from werkzeug.utils import secure_filename
 import io
+import wavio
 
 app = Flask(__name__)
 CORS(app)
@@ -38,10 +39,12 @@ def audio():
         if file:
             recognizer = sr.Recognizer()
             audioFile = sr.AudioFile(file)
+            print(type(audioFile))
             with audioFile as source:
                 data = recognizer.record(source)
             with open("audio.wav", "wb") as f:
                 f.write(data.get_wav_data())
+           
             
             data_features = sound.audio_features("audio.wav", mfcc=True, chroma=True, mel=True)
             model = pickle.load(open("finalized_model.sav", "rb"))
