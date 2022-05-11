@@ -11,7 +11,7 @@ from werkzeug.utils import secure_filename
 import io
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 @app.route('/', methods=['GET'])
 def index():
